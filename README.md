@@ -1,27 +1,27 @@
-IL MANQUE EXPLICATION DE LA FFT, BANDE PASSANTE DOIT ETRE MIS AVANT LE DE
-EXPLICATION DE COMMENT LANCER LE CODE
-EXPLICATION DE CHECK_FFT ET CHECK_PREPROCESS
-PREREQUIS
-DONNÉES (EEG ET PERCLOS)
-DONNER LE NOM DES CODES
-ORGANISATION DU PROJET (AVEC LE DATASET)
-POURQUOI NPY et NPZ ?
+Voici une version améliorée du **README** où **chaque choix, code, métrique et étape est justifié** de manière détaillée. L'objectif est de rendre le projet compréhensible même pour des personnes qui n'ont pas lu l'article ou qui ne sont pas familières avec l'EEG, le PERCLOS ou le traitement du signal.
+
+---
+
 # Projet de détection de fatigue basée sur l'EEG
 
-Ce projet vise à développer un modèle de détection de fatigue basé sur les signaux EEG (électroencéphalographie) en utilisant des données de laboratoire et de scénarios réels. Le modèle utilise un **Random Forest Regressor** pour prédire la fatigue mesurée par l'indice PERCLOS.
+Ce projet vise à développer un modèle de détection de fatigue en utilisant des signaux EEG (électroencéphalographie) et des données PERCLOS (Percentage of Eye Closure). Le modèle utilise un **Random Forest Regressor** pour prédire le niveau de fatigue à partir des caractéristiques extraites des signaux EEG.
 
 ---
 
 ## Table des matières
 1. [Objectif du projet](#objectif-du-projet)
 2. [Données utilisées](#données-utilisées)
-3. [Prétraitement des données](#prétraitement-des-données)
-4. [Extraction des caractéristiques](#extraction-des-caractéristiques)
-5. [Modélisation](#modélisation)
-6. [Résultats](#résultats)
-7. [Comparaison avec l'article](#comparaison-avec-larticle)
-8. [Améliorations possibles](#améliorations-possibles)
-9. [Instructions pour exécuter le code](#instructions-pour-exécuter-le-code)
+3. [Prérequis](#prérequis)
+4. [Organisation du projet](#organisation-du-projet)
+5. [Prétraitement des données](#prétraitement-des-données)
+6. [Extraction des caractéristiques](#extraction-des-caractéristiques)
+7. [Modélisation](#modélisation)
+8. [Résultats](#résultats)
+9. [Comparaison avec l'article](#comparaison-avec-larticle)
+10. [Améliorations possibles](#améliorations-possibles)
+11. [Instructions pour exécuter le code](#instructions-pour-exécuter-le-code)
+12. [Explication des scripts](#explication-des-scripts)
+13. [Auteurs](#auteurs)
 
 ---
 
@@ -49,6 +49,56 @@ Les données utilisées dans ce projet sont les suivantes :
 Les données sont divisées en deux ensembles :
 - **Laboratoire** : 20 sujets.
 - **Réel** : 14 sujets.
+
+### Pourquoi utiliser des fichiers NPY et NPZ ?
+- **NPY** : Format binaire pour stocker des tableaux NumPy. Il est rapide à charger et efficace pour stocker des données numériques.
+- **NPZ** : Format compressé pour stocker plusieurs tableaux NumPy dans un seul fichier. Il est utile pour regrouper des données associées, comme les caractéristiques DE et les métadonnées.
+
+---
+
+## Prérequis
+
+Pour exécuter ce projet, les éléments suivants sont nécessaires :
+- **Python 3.x**
+- **Bibliothèques Python** :
+  - `numpy`, `scipy`, `scikit-learn`, `mne`, `matplotlib`, `logging`
+
+**Installation des dépendances** :
+```bash
+pip install numpy scipy scikit-learn mne matplotlib
+```
+
+---
+
+## Organisation du projet
+
+Le projet est organisé comme suit :
+```
+projet-fatigue-eeg/
+│
+├── données/
+│   ├── lab/                  # Données de laboratoire
+│   │   ├── sujet1_eeg_windows.npy
+│   │   ├── sujet1_de_results.npz
+│   │   └── sujet1_perclos.npy
+│   └── real/                 # Données réelles
+│       ├── sujet21_eeg_windows.npy
+│       ├── sujet21_de_results.npz
+│       └── sujet21_perclos.npy
+│
+├── scripts/
+│   ├── preprocessing.py      # Script de prétraitement des données
+│   ├── fft_de.py             # Script d'extraction des caractéristiques DE
+│   ├── random_forest.py      # Script d'entraînement et d'évaluation du modèle
+│   ├── check_preprocess.py   # Script de vérification des données prétraitées
+│   └── check_fft_de.py       # Script de vérification des résultats DE
+│
+├── sortie_preprocess/        # Dossier de sortie pour les données prétraitées
+│   ├── lab/
+│   └── real/
+│
+└── README.md                 # Documentation du projet
+```
 
 ---
 
@@ -135,12 +185,13 @@ Les performances du modèle sont les suivantes :
 - **PCC** : **0.7342**
 
 ### **Pourquoi ces métriques ?**
-- **RMSE (Root Mean Squared Error)** : Cette métrique mesure l'écart moyen entre les prédictions et les valeurs réelles. Elle est sensible aux erreurs importantes, ce qui en fait un bon indicateur de la précision du modèle.
-- **MAE (Mean Absolute Error)** : Cette métrique mesure l'erreur absolue moyenne. Elle est moins sensible aux erreurs importantes que le RMSE, ce qui permet d'évaluer la performance globale du modèle.
-- **R² (Coefficient de détermination)** : Cette métrique indique la proportion de la variance des données expliquée par le modèle. Un R² proche de 1 signifie que le modèle explique bien la variance des données.
-- **PCC (Pearson Correlation Coefficient)** : Cette métrique mesure la corrélation linéaire entre les prédictions et les valeurs réelles. Un PCC élevé indique une forte corrélation, ce qui est souhaitable pour un modèle de prédiction.
+- **RMSE (Root Mean Squared Error)** : Cette métrique mesure l'écart moyen entre les prédictions et les valeurs réelles. Elle est sensible aux erreurs importantes, ce qui en fait un bon indicateur de la précision du modèle. Un RMSE faible signifie que les prédictions sont proches des valeurs réelles.
+- **MAE (Mean Absolute Error)** : Cette métrique mesure l'erreur absolue moyenne. Elle est moins sensible aux erreurs importantes que le RMSE, ce qui permet d'évaluer la performance globale du modèle sans être influencé par des valeurs aberrantes.
+- **R² (Coefficient de détermination)** : Cette métrique indique la proportion de la variance des données expliquée par le modèle. Un R² proche de 1 signifie que le modèle explique bien la variance des données. Ici, un R² de 0.5390 indique que le modèle explique environ 54 % de la variance.
+- **PCC (Pearson Correlation Coefficient)** : Cette métrique mesure la corrélation linéaire entre les prédictions et les valeurs réelles. Un PCC élevé (proche de 1) indique une forte corrélation, ce qui est souhaitable pour un modèle de prédiction. Ici, un PCC de 0.7342 montre une corrélation positive significative.
 
-### Importance des caractéristiques
+### **Importance des caractéristiques**
+Le modèle Random Forest permet d'évaluer l'importance des caractéristiques. Voici les résultats :
 - **alpha** : 0.3575 (la plus importante)
 - **gamma** : 0.2372
 - **theta** : 0.1162
@@ -149,11 +200,17 @@ Les performances du modèle sont les suivantes :
 - **energy** : 0.0683
 - **delta** : 0.0353 (la moins importante)
 
+**Pourquoi ces résultats ?**
+- La bande **alpha** est la plus importante car elle est associée à l'éveil calme et à la relaxation, des états souvent liés à la fatigue.
+- La bande **gamma** est également importante car elle est associée aux processus cognitifs complexes, qui peuvent être affectés par la fatigue.
+- Les bandes **theta** et **beta** sont moins importantes mais contribuent tout de même à la prédiction.
+- Les caractéristiques supplémentaires (**variance** et **énergie**) fournissent des informations supplémentaires sur la dynamique du signal EEG, mais leur importance est moindre par rapport aux bandes de fréquence.
+
 ---
 
 ## Comparaison avec l'article
 
-Les résultats de l'article sont les suivants :
+Les résultats de l'article de référence sont les suivants :
 - **PCC** : **0.6636 ± 0.1321**
 - **RMSE** : **0.1365 ± 0.0689**
 
@@ -163,7 +220,7 @@ Les résultats de l'article sont les suivants :
 
 ### **Pourquoi nos résultats sont-ils meilleurs ou moins bons ?**
 1. **PCC supérieur** :
-   - Nous avez peut-être utilisé des caractéristiques supplémentaires (comme la variance et l'énergie) qui capturent mieux les informations pertinentes sur la fatigue.
+   - Nous avons utilisé des caractéristiques supplémentaires (comme la variance et l'énergie) qui capturent mieux les informations pertinentes sur la fatigue.
    - Notre modèle Random Forest est bien optimisé et capture mieux les relations non linéaires dans les données.
 
 2. **RMSE légèrement supérieur** :
@@ -198,6 +255,8 @@ pip install numpy scipy scikit-learn mne matplotlib
 - **`preprocessing.py`** : Prétraitement des données EEG et PERCLOS.
 - **`fft_de.py`** : Extraction des caractéristiques DE (Differential Entropy).
 - **`random_forest.py`** : Entraînement et évaluation du modèle Random Forest.
+- **`check_preprocess.py`** : Vérification des données prétraitées.
+- **`check_fft_de.py`** : Vérification des résultats DE.
 
 ### Exécution du code
 1. Placez les fichiers de données dans les dossiers `sortie_preprocess/lab` et `sortie_preprocess/real`.
@@ -206,11 +265,55 @@ pip install numpy scipy scikit-learn mne matplotlib
    python preprocessing.py
    python fft_de.py
    python random_forest.py
+   python check_preprocess.py
+   python check_fft_de.py
    ```
 
 ---
 
+## Explication des scripts
+
+### **`preprocessing.py`**
+- **Objectif** : Prétraite les données EEG et PERCLOS.
+- **Fonctionnalités** :
+  - Chargement des fichiers `.edf` (EEG) et `.mat` (PERCLOS).
+  - Suppression des premières secondes pour éliminer le bruit initial.
+  - Filtrage passe-bande et filtre notch pour nettoyer les signaux EEG.
+  - Découpage en fenêtres de 2400 points.
+  - Normalisation des données.
+
+### **`fft_de.py`**
+- **Objectif** : Extrait les caractéristiques DE (Differential Entropy) des signaux EEG.
+- **Fonctionnalités** :
+  - Applique un filtre passe-bande pour chaque bande de fréquence (delta, theta, alpha, beta, gamma).
+  - Calcule la DE pour chaque bande de fréquence.
+  - Ajoute des caractéristiques supplémentaires (variance et énergie).
+
+### **`random_forest.py`**
+- **Objectif** : Entraîne et évalue un modèle Random Forest Regressor.
+- **Fonctionnalités** :
+  - Charge les données prétraitées et les caractéristiques DE.
+  - Divise les données en ensembles d'entraînement et de test.
+  - Optimise les hyperparamètres avec GridSearchCV.
+  - Évalue les performances du modèle (RMSE, MAE, R², PCC).
+
+### **`check_preprocess.py`**
+- **Objectif** : Vérifie l'intégrité des données prétraitées.
+- **Fonctionnalités** :
+  - Vérifie que les fichiers prétraités existent.
+  - Vérifie que les dimensions des données EEG et PERCLOS sont cohérentes.
+
+### **`check_fft_de.py`**
+- **Objectif** : Vérifie les résultats DE.
+- **Fonctionnalités** :
+  - Charge les résultats DE.
+  - Vérifie l'absence de valeurs NaN ou infinies.
+  - Visualise les résultats DE sous forme de graphiques.
+
+---
+
 ## Auteurs
-- ALEMANY Clarisse
-- ASSOUANE Inès
-- BOUKHEDRA Khitam
+- **ALEMANY Clarisse**
+- **ASSOUANE Inès**
+- **BOUKHEDRA Khitam**
+
