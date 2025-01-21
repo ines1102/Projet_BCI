@@ -1,7 +1,3 @@
-Voici une version améliorée du **README** où **chaque choix, code, métrique et étape est justifié** de manière détaillée. L'objectif est de rendre le projet compréhensible même pour des personnes qui n'ont pas lu l'article ou qui ne sont pas familières avec l'EEG, le PERCLOS ou le traitement du signal.
-
----
-
 # Projet de détection de fatigue basée sur l'EEG
 
 Ce projet vise à développer un modèle de détection de fatigue en utilisant des signaux EEG (électroencéphalographie) et des données PERCLOS (Percentage of Eye Closure). Le modèle utilise un **Random Forest Regressor** pour prédire le niveau de fatigue à partir des caractéristiques extraites des signaux EEG.
