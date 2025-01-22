@@ -8,13 +8,13 @@ Ce projet vise à développer un modèle de détection de fatigue en utilisant d
 1. [Objectif du projet](#objectif-du-projet)
 2. [Données utilisées](#données-utilisées)
 3. [Prérequis](#prérequis)
-4. [Organisation du projet](#organisation-du-projet)
+4. [Structure du projet](#structure-du-projett)
 5. [Prétraitement des données](#prétraitement-des-données)
 6. [Extraction des caractéristiques](#extraction-des-caractéristiques)
 7. [Matrice de Pearson](#matrice-de-pearson)
 8. [Modélisation avec Random Forest](#modélisation-avec-random-forest)
    - [Optimisation des hyperparamètres avec GridSearchCV](#optimisation-des-hyperparamètres-avec-gridsearchcv)
-9. [Résultats](#résultats)
+9. [Résultats du modèle](#résultats_du_modèle)
 10. [Comparaison avec l'article](#comparaison-avec-larticle)
 11. [Améliorations possibles](#améliorations-possibles)
 12. [Instructions pour exécuter le code](#instructions-pour-exécuter-le-code)
@@ -132,7 +132,7 @@ Les données sont organisées dans le dossier `VLA_VRW/` comme suit :
 
 ---
 
-### **Prérequis**
+## **Prérequis**
 
 Pour exécuter ce projet, les éléments suivants sont nécessaires :
 - **Python 3.x** : Le projet est développé en Python. Assurez-vous d'avoir une version récente de Python installée.
@@ -155,7 +155,7 @@ pip install numpy scipy scikit-learn mne matplotlib seaborn
 
 ---
 
-### **Structure du projet**
+## **Structure du projet**
 
 Le projet est organisé comme suit :
 
