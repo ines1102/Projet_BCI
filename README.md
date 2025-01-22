@@ -1,7 +1,3 @@
-Voici le **README complet** avec l'ajout de la section sur la matrice de Pearson, incluant une explication de son utilité, des résultats, et des instructions pour insérer une image dans un fichier Markdown (`.md`).
-
----
-
 # Projet de détection de fatigue basée sur l'EEG
 
 Ce projet vise à développer un modèle de détection de fatigue en utilisant des signaux EEG (électroencéphalographie) et des données PERCLOS (Percentage of Eye Closure). Le modèle utilise un **Random Forest Regressor** pour prédire le niveau de fatigue à partir des caractéristiques extraites des signaux EEG.
@@ -75,34 +71,20 @@ pip install numpy scipy scikit-learn mne matplotlib
 
 Le projet est organisé comme suit :
 ```
-projet-fatigue-eeg/
+BCI/
 │
-├── données/
-│   ├── lab/                  # Données de laboratoire
-│   │   ├── sujet1_eeg_windows.npy
-│   │   ├── sujet1_de_results.npz
-│   │   └── sujet1_perclos.npy
-│   └── real/                 # Données réelles
-│       ├── sujet21_eeg_windows.npy
-│       ├── sujet21_de_results.npz
-│       └── sujet21_perclos.npy
+├── README.md                  # Documentation principale du projet
+├── Visuels/                   # Dossier contenant les images et graphiques générés
+├── article.pdf                # Article de référence pour le projet
+├── Codes/                     # Dossier contenant les scripts Python
+├── VLA_VRW/                   # Dossier contenant la base de données (BDD)
+│   ├── README.txt             # Documentation spécifique à la BDD
+│   ├── lab/                   # Données de laboratoire
+│   │   ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
+│   │   └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
+│   └── real/                  # Données réelles (structure similaire à lab/)
 │
-├── scripts/
-│   ├── preprocessing.py      # Script de prétraitement des données
-│   ├── fft_de.py             # Script d'extraction des caractéristiques DE
-│   ├── pearson_matrix.py     # Script de calcul de la matrice de Pearson
-│   ├── random_forest.py      # Script d'entraînement et d'évaluation du modèle
-│   ├── check_preprocess.py   # Script de vérification des données prétraitées
-│   └── check_fft_de.py       # Script de vérification des résultats DE
-│
-├── sortie_preprocess/        # Dossier de sortie pour les données prétraitées
-│   ├── lab/
-│   └── real/
-│
-├── images/                   # Dossier pour les images (matrice de Pearson)
-│   └── pearson_matrix.png    # Image de la matrice de Pearson
-│
-└── README.md                 # Documentation du projet
+└── sortie_preprocess/         # Dossier de sortie pour les données prétraitées
 ```
 
 ---
@@ -183,52 +165,138 @@ Le modèle utilisé est un **Random Forest Regressor** avec les hyperparamètres
 - **min_samples_split** : 10
 - **min_samples_leaf** : 2
 
-### **Pourquoi un Random Forest Regressor ?**
-- **Robustesse** : Le Random Forest est un modèle robuste qui résiste au surajustement (overfitting) grâce à l'ensemblage d'arbres de décision.
-- **Non-linéarité** : Le Random Forest peut capturer des relations non linéaires entre les caractéristiques et la cible, ce qui est important pour les données EEG complexes.
-- **Importance des caractéristiques** : Le Random Forest permet d'évaluer l'importance des caractéristiques, ce qui aide à comprendre quelles bandes de fréquence sont les plus pertinentes pour la prédiction.
-
-### **Choix des hyperparamètres**
-- **n_estimators** : 300 arbres ont été choisis pour équilibrer la performance et le temps de calcul.
-- **max_depth** : Une profondeur maximale de 20 permet de capturer des relations complexes sans surajuster.
-- **min_samples_split** : Un seuil de 10 échantillons pour diviser un nœud garantit que les divisions sont basées sur suffisamment de données.
-- **min_samples_leaf** : Un seuil de 2 échantillons par feuille permet d'éviter des feuilles trop petites, ce qui réduit le surajustement.
-
-### **Optimisation des hyperparamètres**
-- Nous avons utilisé **GridSearchCV** pour optimiser les hyperparamètres du modèle.
-- **Pourquoi ?** GridSearchCV permet de tester systématiquement différentes combinaisons d'hyperparamètres pour trouver celles qui maximisent les performances du modèle.
+Voici une explication détaillée du **Random Forest**, de son utilisation dans votre projet, des hyperparamètres choisis, et des données d'entraînement et de test.
 
 ---
 
-## Résultats
+## **Random Forest : Explication détaillée**
 
-Les performances du modèle sont les suivantes :
+### **1. Pourquoi utiliser un Random Forest ?**
+
+Le **Random Forest** est un modèle d'apprentissage automatique basé sur l'**ensemblage d'arbres de décision**. Voici pourquoi il est bien adapté à votre projet :
+
+#### **a. Robustesse**
+- Le Random Forest est **peu sensible au surajustement (overfitting)** grâce à l'ensemblage de plusieurs arbres de décision. Chaque arbre est entraîné sur un sous-ensemble aléatoire des données, ce qui réduit le risque de surajustement.
+
+#### **b. Non-linéarité**
+- Les signaux EEG ont des relations **complexes et non linéaires** avec la fatigue (PERCLOS). Le Random Forest peut capturer ces relations grâce à sa structure d'arbre de décision.
+
+#### **c. Importance des caractéristiques**
+- Le Random Forest permet de calculer l'**importance des caractéristiques**, ce qui vous aide à comprendre quelles bandes de fréquence EEG sont les plus pertinentes pour prédire la fatigue.
+
+#### **d. Facilité d'utilisation**
+- Le Random Forest nécessite peu de prétraitement des données (par exemple, pas besoin de normalisation stricte) et est facile à implémenter avec des bibliothèques comme `scikit-learn`.
+
+---
+
+### **2. Comment fonctionne un Random Forest ?**
+
+Le Random Forest est un **ensemble d'arbres de décision**. Voici comment il fonctionne :
+
+#### **a. Construction des arbres**
+1. **Bootstrap** :
+   - Pour chaque arbre, un sous-ensemble aléatoire des données d'entraînement est sélectionné (avec remise). Cela signifie que certaines données peuvent être utilisées plusieurs fois, tandis que d'autres ne sont pas utilisées.
+
+2. **Sélection aléatoire des caractéristiques** :
+   - À chaque division d'un nœud, un sous-ensemble aléatoire des caractéristiques est considéré. Cela garantit que les arbres sont diversifiés.
+
+3. **Construction de l'arbre** :
+   - Chaque arbre est construit en divisant récursivement les données en sous-ensembles basés sur les caractéristiques. Le critère de division est généralement l'**impureté de Gini** ou l'**entropie**.
+
+#### **b. Prédiction**
+- Pour la prédiction, chaque arbre du Random Forest donne une prédiction. La prédiction finale est la **moyenne** des prédictions de tous les arbres (pour la régression) ou le **vote majoritaire** (pour la classification).
+
+#### **c. Importance des caractéristiques**
+- L'importance d'une caractéristique est calculée en mesurant à quel point elle réduit l'impureté (Gini ou entropie) dans l'ensemble des arbres. Les caractéristiques qui réduisent le plus l'impureté sont considérées comme les plus importantes.
+
+---
+
+### **3. Hyperparamètres du Random Forest**
+
+Voici les hyperparamètres que vous avez choisis et leur justification :
+
+#### **a. `n_estimators` : 300**
+- **Description** : Nombre d'arbres dans la forêt.
+- **Pourquoi 300 ?** :
+  - Un nombre élevé d'arbres améliore la stabilité et la précision du modèle.
+  - 300 est un bon compromis entre performance et temps de calcul.
+
+#### **b. `max_depth` : 20**
+- **Description** : Profondeur maximale de chaque arbre.
+- **Pourquoi 20 ?** :
+  - Une profondeur maximale permet de limiter la complexité des arbres et d'éviter le surajustement.
+  - 20 est suffisamment profond pour capturer des relations complexes sans surajuster.
+
+#### **c. `min_samples_split` : 10**
+- **Description** : Nombre minimum d'échantillons requis pour diviser un nœud.
+- **Pourquoi 10 ?** :
+  - Cela garantit que les divisions sont basées sur suffisamment de données, ce qui réduit le surajustement.
+
+#### **d. `min_samples_leaf` : 2**
+- **Description** : Nombre minimum d'échantillons requis pour être une feuille.
+- **Pourquoi 2 ?** :
+  - Cela évite des feuilles trop petites, ce qui réduit le surajustement et améliore la généralisation.
+
+#### **e. `random_state` : 42**
+- **Description** : Graine aléatoire pour garantir la reproductibilité.
+- **Pourquoi 42 ?** :
+  - C'est une valeur arbitraire couramment utilisée pour garantir que les résultats sont reproductibles.
+
+---
+
+### **4. Données d'entraînement et de test**
+
+#### **a. Division des données**
+- Les données sont divisées en deux ensembles :
+  - **Ensemble d'entraînement** : 80 % des données.
+  - **Ensemble de test** : 20 % des données.
+- Cette division est faite de manière aléatoire mais stratifiée pour garantir que les deux ensembles ont une distribution similaire de PERCLOS.
+
+#### **b. Caractéristiques utilisées**
+- Les caractéristiques d'entraînement incluent :
+  - Les bandes de fréquence EEG (delta, theta, alpha, beta, gamma).
+  - Les caractéristiques supplémentaires (variance et énergie).
+- La cible est la valeur PERCLOS.
+
+#### **c. Normalisation**
+- Les caractéristiques sont normalisées (moyenne = 0, écart-type = 1) pour améliorer la convergence du modèle.
+
+---
+
+### **5. Évaluation du modèle**
+
+Le modèle est évalué sur l'ensemble de test en utilisant les métriques suivantes :
+
+#### **a. RMSE (Root Mean Squared Error)**
+- Mesure l'écart moyen entre les prédictions et les valeurs réelles.
+- **Interprétation** : Plus le RMSE est faible, plus les prédictions sont précises.
+
+#### **b. MAE (Mean Absolute Error)**
+- Mesure l'erreur absolue moyenne.
+- **Interprétation** : Moins sensible aux erreurs importantes que le RMSE.
+
+#### **c. R² (Coefficient de détermination)**
+- Mesure la proportion de la variance des données expliquée par le modèle.
+- **Interprétation** : Un R² proche de 1 signifie que le modèle explique bien la variance des données.
+
+#### **d. PCC (Pearson Correlation Coefficient)**
+- Mesure la corrélation linéaire entre les prédictions et les valeurs réelles.
+- **Interprétation** : Un PCC proche de 1 indique une forte corrélation.
+
+---
+
+### **6. Résultats du modèle**
+
+Voici les performances de votre modèle Random Forest :
 - **RMSE** : **0.1468**
 - **MAE** : **0.1046**
 - **R²** : **0.5390**
 - **PCC** : **0.7342**
 
-### **Pourquoi ces métriques ?**
-- **RMSE (Root Mean Squared Error)** : Cette métrique mesure l'écart moyen entre les prédictions et les valeurs réelles. Elle est sensible aux erreurs importantes, ce qui en fait un bon indicateur de la précision du modèle. Un RMSE faible signifie que les prédictions sont proches des valeurs réelles.
-- **MAE (Mean Absolute Error)** : Cette métrique mesure l'erreur absolue moyenne. Elle est moins sensible aux erreurs importantes que le RMSE, ce qui permet d'évaluer la performance globale du modèle sans être influencé par des valeurs aberrantes.
-- **R² (Coefficient de détermination)** : Cette métrique indique la proportion de la variance des données expliquée par le modèle. Un R² proche de 1 signifie que le modèle explique bien la variance des données. Ici, un R² de 0.5390 indique que le modèle explique environ 54 % de la variance.
-- **PCC (Pearson Correlation Coefficient)** : Cette métrique mesure la corrélation linéaire entre les prédictions et les valeurs réelles. Un PCC élevé (proche de 1) indique une forte corrélation, ce qui est souhaitable pour un modèle de prédiction. Ici, un PCC de 0.7342 montre une corrélation positive significative.
-
-### **Importance des caractéristiques**
-Le modèle Random Forest permet d'évaluer l'importance des caractéristiques. Voici les résultats :
-- **alpha** : 0.3575 (la plus importante)
-- **gamma** : 0.2372
-- **theta** : 0.1162
-- **beta** : 0.1157
-- **variance** : 0.0697
-- **energy** : 0.0683
-- **delta** : 0.0353 (la moins importante)
-
-**Pourquoi ces résultats ?**
-- La bande **alpha** est la plus importante car elle est associée à l'éveil calme et à la relaxation, des états souvent liés à la fatigue.
-- La bande **gamma** est également importante car elle est associée aux processus cognitifs complexes, qui peuvent être affectés par la fatigue.
-- Les bandes **theta** et **beta** sont moins importantes mais contribuent tout de même à la prédiction.
-- Les caractéristiques supplémentaires (**variance** et **énergie**) fournissent des informations supplémentaires sur la dynamique du signal EEG, mais leur importance est moindre par rapport aux bandes de fréquence.
+#### **Interprétation**
+- Le **RMSE** et le **MAE** montrent que les prédictions sont relativement proches des valeurs réelles.
+- Le **R²** indique que le modèle explique environ 54 % de la variance des données.
+- Le **PCC** montre une forte corrélation entre les prédictions et les valeurs réelles.
 
 ---
 
@@ -320,7 +388,7 @@ pip install numpy scipy scikit-learn mne matplotlib
 - **Fonctionnalités** :
   - Calcule les corrélations entre les bandes de fréquence EEG et PERCLOS.
   - Génère une heatmap de la matrice de Pearson.
-  - Sauvegarde l'image dans le dossier `images/`.
+  - Sauvegarde l'image dans le dossier `Visuels/`.
 
 ### **`random_forest.py`**
 - **Objectif** : Entraîne et évalue un modèle Random Forest Regressor.
@@ -349,4 +417,3 @@ pip install numpy scipy scikit-learn mne matplotlib
 - **ALEMANY Clarisse**
 - **ASSOUANE Inès**
 - **BOUKHEDRA Khitam**
-
