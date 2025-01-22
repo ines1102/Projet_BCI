@@ -75,8 +75,26 @@ BCI/
 │
 ├── README.md                  # Documentation principale du projet
 ├── Visuels/                   # Dossier contenant les images et graphiques générés
+│   ├── alpha.png              # Visualisation de la bande de fréquence alpha
+│   ├── avant_notch.png        # Signal EEG avant application du filtre notch
+│   ├── apres_notch.png        # Signal EEG après application du filtre notch
+│   ├── beta.png               # Visualisation de la bande de fréquence beta
+│   ├── delta.png              # Visualisation de la bande de fréquence delta
+│   ├── gamma.png              # Visualisation de la bande de fréquence gamma
+│   ├── theta.png              # Visualisation de la bande de fréquence theta
+│   ├── pearson_matrix.png     # Matrice de Pearson des corrélations
+│   ├── random_forest_1.png    # Graphique des performances du modèle (1/2)
+│   └── random_forest_2.png    # Graphique des performances du modèle (2/2)
+│
 ├── article.pdf                # Article de référence pour le projet
 ├── Codes/                     # Dossier contenant les scripts Python
+│   ├── check_fft_de.py        # Vérification des résultats DE
+│   ├── check_preprocess.py    # Vérification des données prétraitées
+│   ├── fft_de.py              # Extraction des caractéristiques DE
+│   ├── matrice.py             # Calcul de la matrice de Pearson
+│   ├── preprocessing.py       # Prétraitement des données EEG et PERCLOS
+│   └── random_forest.py       # Entraînement et évaluation du modèle Random Forest
+│
 ├── VLA_VRW/                   # Dossier contenant la base de données (BDD)
 │   ├── README.txt             # Documentation spécifique à la BDD
 │   ├── lab/                   # Données de laboratoire
