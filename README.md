@@ -420,23 +420,6 @@ L'extraction des caractéristiques est essentielle pour plusieurs raisons :
 
 ---
 
-### **Résultat des caractéristiques extraites**
-
-Pour chaque fenêtre EEG, les caractéristiques suivantes sont extraites :
-- **DE_delta** : Differential Entropy pour la bande delta.
-- **DE_theta** : Differential Entropy pour la bande theta.
-- **DE_alpha** : Differential Entropy pour la bande alpha.
-- **DE_beta** : Differential Entropy pour la bande beta.
-- **DE_gamma** : Differential Entropy pour la bande gamma.
-- **Variance** : Variance du signal.
-- **Énergie** : Énergie du signal.
-
-Ces caractéristiques sont ensuite utilisées comme entrées pour le modèle d'apprentissage automatique.
-
-Voici une version détaillée de la section **Matrice de Pearson**, rédigée de manière à ce que tout soit clair pour quelqu'un qui n'a pas lu l'article de référence. Cette explication est conçue pour être accessible tout en fournissant suffisamment de détails pour comprendre l'utilité de la matrice de Pearson, son calcul, et son interprétation dans le contexte du projet.
-
----
-
 ## Matrice de Pearson
 
 ### **Qu'est-ce que la matrice de Pearson ?**
@@ -552,10 +535,6 @@ Voici la matrice de corrélation de Pearson calculée pour les caractéristiques
 1. **Sélection des caractéristiques** : La matrice de Pearson permet d'identifier les caractéristiques les plus pertinentes pour la prédiction de la fatigue. Par exemple, si la DE_alpha est fortement corrélée avec PERCLOS, elle sera probablement incluse dans le modèle.
 2. **Détection de la multicollinéarité** : Si deux caractéristiques sont fortement corrélées entre elles (par exemple, DE_alpha et DE_theta), cela peut poser des problèmes de multicollinéarité. Dans ce cas, il peut être nécessaire de supprimer l'une des deux caractéristiques.
 3. **Interprétabilité** : La matrice de Pearson fournit des informations claires sur les relations entre les variables, ce qui facilite l'interprétation des résultats.
-
----
-
-Voici une version complète et détaillée de la section **Modélisation avec Random Forest**, intégrant l'optimisation des hyperparamètres avec **GridSearchCV**. Cette explication est conçue pour être accessible tout en fournissant suffisamment de détails techniques pour comprendre le choix du modèle, son fonctionnement, et son optimisation.
 
 ---
 
