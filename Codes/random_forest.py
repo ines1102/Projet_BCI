@@ -22,7 +22,7 @@ def extract_features(eeg_windows):
         # Variance
         var = np.var(window)
         # Energie (intégrale du carré du signal)
-        energy = simpson(window**2, dx=1)  # Utiliser simpson au lieu de simps
+        energy = simpson(window**2, dx=1) 
         features.append([var, energy])
     return np.array(features)
 
