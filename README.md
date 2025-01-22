@@ -128,71 +128,60 @@ Les données sont organisées dans le dossier `VLA_VRW/` comme suit :
 - **EEG** : Les signaux EEG sont sensibles aux changements d'état cognitif, comme la fatigue. Ils fournissent des informations en temps réel sur l'activité cérébrale, ce qui en fait un outil précieux pour la détection de la fatigue.
 - **PERCLOS** : Cette métrique est un indicateur comportemental de la fatigue. Elle est facile à mesurer et fortement corrélée avec l'état de somnolence. En combinant les données EEG et PERCLOS, nous pouvons obtenir une vision plus complète de l'état de fatigue d'un individu.
 
-### **Exemple de données**
-
-Voici un exemple de structure des données pour un sujet :
-- **EEG** : `1.edf` contient les signaux EEG bruts du sujet 1.
-- **PERCLOS** : `1.mat` contient les mesures PERCLOS alignées avec les données EEG du sujet 1.
-
 ---
 
-## Prérequis
+### **Prérequis**
 
 Pour exécuter ce projet, les éléments suivants sont nécessaires :
-- **Python 3.x**
-- **Bibliothèques Python** :
-  - `numpy`, `scipy`, `scikit-learn`, `mne`, `matplotlib`, `logging`
+- **Python 3.x** : Le projet est développé en Python. Assurez-vous d'avoir une version récente de Python installée.
+- **Bibliothèques Python** : Les bibliothèques suivantes doivent être installées :
+  - `numpy`
+  - `scipy`
+  - `scikit-learn`
+  - `mne`
+  - `matplotlib`
+  - `seaborn`
+  - `logging`
 
-**Installation des dépendances** :
+### **Installation des dépendances**
+
+Vous pouvez installer les dépendances nécessaires en utilisant `pip`. Exécutez la commande suivante dans votre terminal :
+
 ```bash
-pip install numpy scipy scikit-learn mne matplotlib
+pip install numpy scipy scikit-learn mne matplotlib seaborn
 ```
 
 ---
 
-## Organisation du projet
+### **Structure du projet**
 
 Le projet est organisé comme suit :
+
 ```
 BCI/
 │
 ├── README.md                  # Documentation principale du projet
 ├── Visuels/                   # Dossier contenant les images et graphiques générés
-│   ├── alpha.png              # Visualisation de la bande de fréquence alpha
-│   ├── avant_notch.png        # Signal EEG avant application du filtre notch
-│   ├── apres_notch.png        # Signal EEG après application du filtre notch
-│   ├── beta.png               # Visualisation de la bande de fréquence beta
-│   ├── delta.png              # Visualisation de la bande de fréquence delta
-│   ├── gamma.png              # Visualisation de la bande de fréquence gamma
-│   ├── theta.png              # Visualisation de la bande de fréquence theta
-│   ├── pearson_matrix.png     # Matrice de Pearson des corrélations
-│   ├── random_forest_1.png    # Graphique des performances du modèle (1/2)
-│   └── random_forest_2.png    # Graphique des performances du modèle (2/2)
-│
 ├── article.pdf                # Article de référence pour le projet
 ├── Codes/                     # Dossier contenant les scripts Python
-│   ├── check_fft_de.py        # Vérification des résultats DE
-│   ├── check_preprocess.py    # Vérification des données prétraitées
-│   ├── fft_de.py              # Extraction des caractéristiques DE
-│   ├── matrice.py             # Calcul de la matrice de Pearson
-│   ├── preprocessing.py       # Prétraitement des données EEG et PERCLOS
-│   └── random_forest.py       # Entraînement et évaluation du modèle Random Forest
+│   ├── preprocessing.py       # Script de prétraitement des données EEG et PERCLOS
+│   ├── fft_de.py              # Script d'extraction des caractéristiques DE
+│   ├── matrice.py             # Script de calcul de la matrice de Pearson
+│   ├── random_forest.py       # Script d'entraînement et d'évaluation du modèle Random Forest
+│   ├── check_preprocess.py    # Script de vérification des données prétraitées
+│   └── check_fft_de.py        # Script de vérification des résultats DE
 │
 ├── VLA_VRW/                   # Dossier contenant la base de données (BDD)
 │   ├── README.txt             # Documentation spécifique à la BDD
 │   ├── lab/                   # Données de laboratoire
 │   │   ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
 │   │   └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
-│   └── real/                  # Données réelles (structure similaire à lab/)
-│   │   ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
-│   │   └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
+│   └── real/                  # Données réelles
+│       ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
+│       └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
 │
 └── sortie_preprocess/         # Dossier de sortie pour les données prétraitées
 ```
----
-
-Voici une version détaillée de la section **Prétraitement des données**, rédigée de manière à ce que tout soit clair pour quelqu'un qui n'a pas lu l'article de référence. Cette explication est conçue pour être accessible tout en fournissant suffisamment de détails pour comprendre les étapes de prétraitement et leur importance.
-
 ---
 
 ## Prétraitement des données
@@ -769,67 +758,7 @@ Pour améliorer les performances de notre modèle et surpasser les résultats de
 4. **Améliorer le prétraitement** : Appliquer des techniques de filtrage des artefacts et de normalisation spécifique.
 
 
-Voici une version détaillée des sections **Instructions pour exécuter le code** et **Explication des scripts**. Ces sections sont conçues pour être claires et accessibles, tout en fournissant suffisamment de détails pour permettre à quelqu'un de reproduire le projet et de comprendre le rôle de chaque script.
-
----
-
 ## Instructions pour exécuter le code
-
-### **Prérequis**
-
-Pour exécuter ce projet, les éléments suivants sont nécessaires :
-- **Python 3.x** : Le projet est développé en Python. Assurez-vous d'avoir une version récente de Python installée.
-- **Bibliothèques Python** : Les bibliothèques suivantes doivent être installées :
-  - `numpy`
-  - `scipy`
-  - `scikit-learn`
-  - `mne`
-  - `matplotlib`
-  - `seaborn`
-  - `logging`
-
-### **Installation des dépendances**
-
-Vous pouvez installer les dépendances nécessaires en utilisant `pip`. Exécutez la commande suivante dans votre terminal :
-
-```bash
-pip install numpy scipy scikit-learn mne matplotlib seaborn
-```
-
----
-
-### **Structure du projet**
-
-Le projet est organisé comme suit :
-
-```
-BCI/
-│
-├── README.md                  # Documentation principale du projet
-├── Visuels/                   # Dossier contenant les images et graphiques générés
-├── article.pdf                # Article de référence pour le projet
-├── Codes/                     # Dossier contenant les scripts Python
-│   ├── preprocessing.py       # Script de prétraitement des données EEG et PERCLOS
-│   ├── fft_de.py              # Script d'extraction des caractéristiques DE
-│   ├── matrice.py             # Script de calcul de la matrice de Pearson
-│   ├── random_forest.py       # Script d'entraînement et d'évaluation du modèle Random Forest
-│   ├── check_preprocess.py    # Script de vérification des données prétraitées
-│   └── check_fft_de.py        # Script de vérification des résultats DE
-│
-├── VLA_VRW/                   # Dossier contenant la base de données (BDD)
-│   ├── README.txt             # Documentation spécifique à la BDD
-│   ├── lab/                   # Données de laboratoire
-│   │   ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
-│   │   └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
-│   └── real/                  # Données réelles
-│       ├── EEG/               # Fichiers EEG (.edf) pour chaque sujet
-│       └── perclos/           # Fichiers PERCLOS (.mat) pour chaque sujet
-│
-└── sortie_preprocess/         # Dossier de sortie pour les données prétraitées
-```
-
----
-
 ### **Exécution du code**
 
 1. **Placez-vous dans le dossier `Codes/`** :
