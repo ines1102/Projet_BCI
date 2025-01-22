@@ -1,3 +1,7 @@
+Voici le **README complet** avec l'ajout de la section sur la matrice de Pearson, incluant une explication de son utilité, des résultats, et des instructions pour insérer une image dans un fichier Markdown (`.md`).
+
+---
+
 # Projet de détection de fatigue basée sur l'EEG
 
 Ce projet vise à développer un modèle de détection de fatigue en utilisant des signaux EEG (électroencéphalographie) et des données PERCLOS (Percentage of Eye Closure). Le modèle utilise un **Random Forest Regressor** pour prédire le niveau de fatigue à partir des caractéristiques extraites des signaux EEG.
@@ -11,13 +15,14 @@ Ce projet vise à développer un modèle de détection de fatigue en utilisant d
 4. [Organisation du projet](#organisation-du-projet)
 5. [Prétraitement des données](#prétraitement-des-données)
 6. [Extraction des caractéristiques](#extraction-des-caractéristiques)
-7. [Modélisation](#modélisation)
-8. [Résultats](#résultats)
-9. [Comparaison avec l'article](#comparaison-avec-larticle)
-10. [Améliorations possibles](#améliorations-possibles)
-11. [Instructions pour exécuter le code](#instructions-pour-exécuter-le-code)
-12. [Explication des scripts](#explication-des-scripts)
-13. [Auteurs](#auteurs)
+7. [Matrice de Pearson](#matrice-de-pearson)
+8. [Modélisation](#modélisation)
+9. [Résultats](#résultats)
+10. [Comparaison avec l'article](#comparaison-avec-larticle)
+11. [Améliorations possibles](#améliorations-possibles)
+12. [Instructions pour exécuter le code](#instructions-pour-exécuter-le-code)
+13. [Explication des scripts](#explication-des-scripts)
+14. [Auteurs](#auteurs)
 
 ---
 
@@ -85,6 +90,7 @@ projet-fatigue-eeg/
 ├── scripts/
 │   ├── preprocessing.py      # Script de prétraitement des données
 │   ├── fft_de.py             # Script d'extraction des caractéristiques DE
+│   ├── pearson_matrix.py     # Script de calcul de la matrice de Pearson
 │   ├── random_forest.py      # Script d'entraînement et d'évaluation du modèle
 │   ├── check_preprocess.py   # Script de vérification des données prétraitées
 │   └── check_fft_de.py       # Script de vérification des résultats DE
@@ -92,6 +98,9 @@ projet-fatigue-eeg/
 ├── sortie_preprocess/        # Dossier de sortie pour les données prétraitées
 │   ├── lab/
 │   └── real/
+│
+├── images/                   # Dossier pour les images (matrice de Pearson)
+│   └── pearson_matrix.png    # Image de la matrice de Pearson
 │
 └── README.md                 # Documentation du projet
 ```
@@ -144,6 +153,25 @@ Les caractéristiques suivantes sont extraites pour chaque fenêtre EEG :
    - **Variance** : Mesure de la variabilité du signal.
    - **Énergie** : Intégrale du carré du signal.
    - **Pourquoi ces caractéristiques ?** La variance et l'énergie fournissent des informations supplémentaires sur la dynamique du signal EEG, ce qui peut aider le modèle à mieux prédire la fatigue.
+
+---
+
+## Matrice de Pearson
+
+La **matrice de Pearson** est utilisée pour mesurer les relations linéaires entre les caractéristiques (bandes de fréquence EEG) et la cible (PERCLOS). Elle est calculée **après le prétraitement des données** et **avant la modélisation** pour :
+
+1. **Comprendre les données** :
+   - Identifier les relations entre les variables.
+   - Détecter des problèmes comme la multicollinéarité.
+
+2. **Guider la modélisation** :
+   - Sélectionner les caractéristiques les plus pertinentes pour la prédiction.
+   - Choisir un modèle adapté (par exemple, un modèle non linéaire si les corrélations sont faibles).
+
+### **Résultats de la matrice de Pearson**
+Voici un exemple de visualisation de la matrice de Pearson :
+
+![Matrice de Pearson](Visuels/pearson_matrix.png)
 
 ---
 
@@ -250,6 +278,7 @@ pip install numpy scipy scikit-learn mne matplotlib
 ### Structure des fichiers
 - **`preprocessing.py`** : Prétraitement des données EEG et PERCLOS.
 - **`fft_de.py`** : Extraction des caractéristiques DE (Differential Entropy).
+- **`pearson_matrix.py`** : Calcul de la matrice de Pearson.
 - **`random_forest.py`** : Entraînement et évaluation du modèle Random Forest.
 - **`check_preprocess.py`** : Vérification des données prétraitées.
 - **`check_fft_de.py`** : Vérification des résultats DE.
@@ -258,11 +287,12 @@ pip install numpy scipy scikit-learn mne matplotlib
 1. Placez les fichiers de données dans les dossiers `sortie_preprocess/lab` et `sortie_preprocess/real`.
 2. Exécutez les scripts dans l'ordre suivant :
    ```bash
-   python preprocessing.py
-   python fft_de.py
-   python random_forest.py
-   python check_preprocess.py
-   python check_fft_de.py
+   python scripts/preprocessing.py
+   python scripts/fft_de.py
+   python scripts/pearson_matrix.py
+   python scripts/random_forest.py
+   python scripts/check_preprocess.py
+   python scripts/check_fft_de.py
    ```
 
 ---
@@ -284,6 +314,13 @@ pip install numpy scipy scikit-learn mne matplotlib
   - Applique un filtre passe-bande pour chaque bande de fréquence (delta, theta, alpha, beta, gamma).
   - Calcule la DE pour chaque bande de fréquence.
   - Ajoute des caractéristiques supplémentaires (variance et énergie).
+
+### **`pearson_matrix.py`**
+- **Objectif** : Calcule et visualise la matrice de Pearson.
+- **Fonctionnalités** :
+  - Calcule les corrélations entre les bandes de fréquence EEG et PERCLOS.
+  - Génère une heatmap de la matrice de Pearson.
+  - Sauvegarde l'image dans le dossier `images/`.
 
 ### **`random_forest.py`**
 - **Objectif** : Entraîne et évalue un modèle Random Forest Regressor.
