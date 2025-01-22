@@ -596,30 +596,67 @@ Le Random Forest est un **ensemble d'arbres de décision**. Voici comment il fon
 
 Pour trouver les meilleurs hyperparamètres, nous avons utilisé **GridSearchCV**, une fonction de la bibliothèque `scikit-learn` qui effectue une recherche exhaustive sur une grille d'hyperparamètres.
 
-#### **1. Grille d'hyperparamètres**
-Voici la grille d'hyperparamètres que nous avons explorée :
-```python
-param_grid = {
-    'n_estimators': [100, 200, 300],
-    'max_depth': [10, 20, 30],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4]
-}
-```
+### **Qu'est-ce que Grid Search ?**
+
+**Grid Search** (recherche sur grille) est une technique d'optimisation des hyperparamètres d'un modèle d'apprentissage automatique. Les hyperparamètres sont des paramètres qui ne sont pas appris par le modèle pendant l'entraînement, mais qui doivent être définis avant l'entraînement. Par exemple, dans un Random Forest, les hyperparamètres incluent le nombre d'arbres (`n_estimators`), la profondeur maximale des arbres (`max_depth`), etc.
+
+Grid Search explore systématiquement toutes les combinaisons possibles d'hyperparamètres dans une grille prédéfinie et sélectionne la combinaison qui donne les meilleures performances selon une métrique choisie (par exemple, l'erreur quadratique moyenne pour un problème de régression).
+
+---
+
+### **Pourquoi utiliser Grid Search ?**
+
+1. **Amélioration des performances du modèle** : Les hyperparamètres ont un impact significatif sur les performances du modèle. Grid Search permet de trouver la combinaison optimale d'hyperparamètres pour maximiser la précision du modèle.
+2. **Validation croisée** : Grid Search utilise la validation croisée pour évaluer chaque combinaison d'hyperparamètres, ce qui réduit le risque de surajustement (overfitting) et garantit que le modèle généralise bien sur des données non vues.
+3. **Automatisation** : Au lieu de tester manuellement différentes combinaisons d'hyperparamètres, Grid Search automatise ce processus, ce qui permet de gagner du temps et d'éviter les erreurs.
+
+---
+
+### **Comment fonctionne Grid Search ?**
+
+Grid Search fonctionne en suivant les étapes suivantes :
+
+#### **1. Définition de la grille d'hyperparamètres**
+- Vous spécifiez une grille d'hyperparamètres à explorer. Par exemple, pour un Random Forest, vous pouvez définir une grille pour `n_estimators`, `max_depth`, `min_samples_split`, etc.
+- Exemple de grille :
+  ```python
+  param_grid = {
+      'n_estimators': [100, 200, 300],
+      'max_depth': [10, 20, 30],
+      'min_samples_split': [2, 5, 10],
+      'min_samples_leaf': [1, 2, 4]
+  }
+  ```
 
 #### **2. Validation croisée**
-- Nous avons utilisé une validation croisée à 5 folds (`cv=5`) pour évaluer chaque combinaison d'hyperparamètres.
-- Cela signifie que les données d'entraînement sont divisées en 5 sous-ensembles, et le modèle est entraîné et évalué 5 fois pour chaque combinaison.
+- Grid Search divise les données d'entraînement en plusieurs sous-ensembles (appelés "folds"). Pour chaque combinaison d'hyperparamètres, il entraîne le modèle sur une partie des données et l'évalue sur le reste. Dans notre cas, nous avons utilisés 5 folds (`cv=5`) pour évaluer chaque combinaison d'hyperparamètres
+- Cela permet d'obtenir une estimation robuste des performances du modèle pour chaque combinaison d'hyperparamètres. Ici, les données d'entraînement sont divisées en 5 sous-ensembles, et le modèle est entraîné et évalué 5 fois pour chaque combinaison.
 
-#### **3. Meilleurs hyperparamètres**
-Après avoir testé toutes les combinaisons, `GridSearchCV` a sélectionné les hyperparamètres suivants comme optimaux :
-- `n_estimators` : 300
-- `max_depth` : 20
-- `min_samples_split` : 10
-- `min_samples_leaf` : 2
+#### **3. Sélection de la meilleure combinaison**
+- Après avoir testé toutes les combinaisons d'hyperparamètres, Grid Search sélectionne celle qui donne les meilleures performances (par exemple, la plus faible erreur ou le score le plus élevé).
 
 #### **4. Entraînement du modèle final**
-Le modèle final a été entraîné sur l'ensemble des données d'entraînement en utilisant les hyperparamètres optimaux.
+- Une fois la meilleure combinaison d'hyperparamètres trouvée, Grid Search entraîne le modèle final sur l'ensemble des données d'entraînement en utilisant ces hyperparamètres.
+
+### **Résultats de GridSearchCV**
+
+- **Meilleurs hyperparamètres** :
+  - `n_estimators` : 300
+  - `max_depth` : 20
+  - `min_samples_split` : 10
+  - `min_samples_leaf` : 2
+
+- **Impact sur les performances** :
+  - L'utilisation de GridSearchCV a permis d'améliorer les performances du modèle en trouvant la combinaison d'hyperparamètres optimale.
+  - Les métriques d'évaluation (RMSE, MAE, R², PCC) ont été améliorées par rapport à un modèle non optimisé.
+
+---
+
+### **Pourquoi Grid Search est-il important ?**
+
+1. **Amélioration des performances** : En trouvant les meilleurs hyperparamètres, Grid Search permet d'obtenir un modèle plus performant.
+2. **Réduction du surajustement** : La validation croisée garantit que le modèle généralise bien sur des données non vues.
+3. **Gain de temps** : Grid Search automatise le processus de recherche des hyperparamètres, ce qui permet de gagner du temps par rapport à une recherche manuelle.
 
 ---
 
